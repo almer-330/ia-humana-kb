@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarjeta — Cómo funciona un LLM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #ffffff0f;
+      --accent: #7c6aff;
+      --accent-soft: #7c6aff18;
+      --green: #4ade80;
+      --green-soft: #4ade8018;
+      --amber: #fbbf24;
+      --amber-soft: #fbbf2418;
+      --red: #f87171;
+      --red-soft: #f8717118;
+      --cyan: #22d3ee;
+      --cyan-soft: #22d3ee18;
+      --text: #e8e8f0;
+      --text-muted: #7878a0;
+      --text-dim: #4a4a6a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 24px 20px 60px;
+    }
+
+    .fase-badge {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 22px 0;
+    }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    /* CONCEPT BLOCK */
+    .concept {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .concept::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+    }
+
+    .c-purple::before { background: var(--accent); }
+    .c-green::before  { background: var(--green); }
+    .c-amber::before  { background: var(--amber); }
+    .c-red::before    { background: var(--red); }
+    .c-cyan::before   { background: var(--cyan); }
+    .c-pink::before   { background: #f472b6; }
+
+    .concept-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .c-purple .concept-num { color: var(--accent); }
+    .c-green .concept-num  { color: var(--green); }
+    .c-amber .concept-num  { color: var(--amber); }
+    .c-red .concept-num    { color: var(--red); }
+    .c-cyan .concept-num   { color: var(--cyan); }
+    .c-pink .concept-num   { color: #f472b6; }
+
+    .concept-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 7px;
+    }
+
+    .concept-body {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .concept-body strong { color: var(--text); font-weight: 500; }
+
+    /* ANALOGY */
+    .analogy {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 10px 0 4px;
+    }
+
+    .analogy-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 6px;
+    }
+
+    .analogy p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .analogy p strong { color: var(--text); font-style: normal; font-weight: 500; }
+
+    /* WARNING */
+    .warning {
+      background: var(--red-soft);
+      border: 1px solid var(--red);
+      border-radius: 12px;
+      padding: 13px 16px;
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .warning-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+    .warning p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .warning p strong { color: var(--text); font-weight: 500; }
+
+    /* FLOW */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+
+    .flow-step {
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 5px 10px;
+    }
+
+    .flow-arrow { color: var(--accent); font-size: 14px; font-weight: 700; }
+
+    /* KEY LINE */
+    .key-line {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      text-align: center;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      line-height: 1.6;
+      margin: 16px 0;
+    }
+
+    /* HIGHLIGHT */
+    .highlight {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin: 20px 0 0;
+    }
+
+    .highlight p {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .highlight p strong { font-style: normal; color: var(--accent); }
+
+    .footer {
+      margin-top: 32px;
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="fase-badge">Fase 1 — Entender la máquina</div>
+  <h1 class="card-title">Cómo funciona un LLM</h1>
+  <p class="card-subtitle">Los 6 conceptos que necesitas entender antes de usar IA con criterio.</p>
+
+  <div class="divider"></div>
+
+  <!-- 1 -->
+  <p class="section-label">Concepto 1</p>
+  <div class="concept c-purple">
+    <div class="concept-num">Fundamento</div>
+    <div class="concept-title">Predice, no piensa</div>
+    <div class="concept-body">
+      Un <strong>LLM (Large Language Model)</strong> es una máquina entrenada con cantidades masivas de texto. Su función no es razonar — es <strong>predecir la siguiente palabra</strong> basándose en patrones aprendidos. Lo que parece inteligencia es predicción de alta precisión.
+    </div>
+  </div>
+  <div class="analogy">
+    <div class="analogy-label">🧠 Analogía</div>
+    <p>Como dominar un idioma. Cuando lo dominas, ya no construyes las frases — las predices inconscientemente. <strong>El LLM hace lo mismo, pero sin entender lo que dice.</strong></p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 2 -->
+  <p class="section-label">Concepto 2</p>
+  <div class="concept c-green">
+    <div class="concept-num">Procesamiento</div>
+    <div class="concept-title">Tokens — cómo lee el modelo</div>
+    <div class="concept-body">
+      El modelo no procesa palabras completas. Las divide en pedazos más pequeños llamados <strong>tokens</strong>, que luego convierte en números para procesarlos. Una palabra puede ser 1, 2 o 3 tokens dependiendo de su longitud.
+    </div>
+  </div>
+  <div class="flow">
+    <span class="flow-step">Palabra</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">Tokens (pedazos)</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">Números</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">Predicción</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 3 -->
+  <p class="section-label">Concepto 3</p>
+  <div class="concept c-amber">
+    <div class="concept-num">Memoria</div>
+    <div class="concept-title">El contexto es su única memoria</div>
+    <div class="concept-body">
+      El modelo no recuerda conversaciones anteriores. Solo "ve" lo que está en la <strong>ventana de contexto</strong> — la conversación actual. Cuando se llena, lo más antiguo desaparece. En una conversación nueva, empieza desde cero.
+    </div>
+  </div>
+  <div class="key-line">
+    <span style="color:var(--accent)">Entrenamiento</span> = lo que sabe siempre.<br>
+    <span style="color:var(--amber)">Contexto</span> = lo que recuerda ahora mismo.
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 4 -->
+  <p class="section-label">Concepto 4</p>
+  <div class="concept c-red">
+    <div class="concept-num">Límite</div>
+    <div class="concept-title">Por qué alucina</div>
+    <div class="concept-body">
+      El modelo siempre predice — aunque no tenga la información correcta. <strong>No sabe lo que no sabe.</strong> Genera lo más probable con lo que tiene y lo hace con el mismo tono seguro con el que responde algo que sí sabe.
+    </div>
+  </div>
+  <div class="analogy">
+    <div class="analogy-label">🧠 Analogía</div>
+    <p>Aprendiendo inglés, tu cerebro asocia palabras nuevas con el patrón <em>-tion</em>. A veces aciertas. A veces inventas algo que suena real pero no existe. <strong>Eso es exactamente una alucinación.</strong></p>
+  </div>
+  <div class="warning">
+    <span class="warning-icon">⚠️</span>
+    <p><strong>Verifica siempre</strong> fechas, estadísticas, citas y datos específicos. El modelo los genera con la misma confianza aunque sean incorrectos.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 5 -->
+  <p class="section-label">Concepto 5</p>
+  <div class="concept c-cyan">
+    <div class="concept-num">Utilidad</div>
+    <div class="concept-title">RLHF — el segundo entrenamiento</div>
+    <div class="concept-body">
+      El entrenamiento base solo produce texto. Para convertirlo en asistente útil existe el <strong>RLHF</strong> — humanos califican respuestas y el modelo aprende a ser útil, no solo a predecir.
+    </div>
+  </div>
+  <div class="analogy">
+    <div class="analogy-label">🧠 Analogía</div>
+    <p>Los libros y cursos te dan el conocimiento del idioma. <strong>El tutor te da el acento, la pronunciación y la utilidad.</strong> El entrenamiento base es el libro. El RLHF es el tutor.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 6 -->
+  <p class="section-label">Concepto 6</p>
+  <div class="concept c-pink">
+    <div class="concept-num">Evolución</div>
+    <div class="concept-title">Agentes y seguridad</div>
+    <div class="concept-body">
+      Un <strong>agente</strong> es un LLM con herramientas — capaz de actuar por pasos para lograr un objetivo, no solo responder.<br><br>
+      Un <strong>jailbreak</strong> es una instrucción disfrazada que intenta romper las restricciones del modelo. Las restricciones son patrones aprendidos — no reglas fijas — y tienen grietas.
+    </div>
+  </div>
+  <div class="key-line">
+    <span style="color:#f472b6">LLM</span> = cerebro que predice.<br>
+    <span style="color:var(--cyan)">Agente</span> = ese cerebro con manos que actúan.
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- RESUMEN -->
+  <p class="section-label">Para recordar</p>
+  <div class="highlight">
+    <p>Un LLM es una <strong>máquina de predicción</strong> entrenada con tanto texto que sus predicciones parecen comprensión — pero no lo son. Su límite es el contexto que tiene. Su riesgo es predecir cuando no sabe. Su utilidad viene del feedback humano. Su futuro son los agentes.</p>
+  </div>
+
+  <div class="footer">Fase 1 · IA Humana · Conocimiento propio</div>
+
+</body>
+</html>
