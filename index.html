@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IA Humana — Base de Conocimiento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #ffffff0f;
+      --border-hover: #ffffff22;
+      --accent: #7c6aff;
+      --accent-soft: #7c6aff18;
+      --green: #4ade80;
+      --green-soft: #4ade8018;
+      --amber: #fbbf24;
+      --amber-soft: #fbbf2418;
+      --red: #f87171;
+      --red-soft: #f8717118;
+      --cyan: #22d3ee;
+      --cyan-soft: #22d3ee18;
+      --text: #e8e8f0;
+      --text-muted: #7878a0;
+      --text-dim: #4a4a6a;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; max-width: 680px; margin: 0 auto; }
+
+    .header {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #0f0f1a 0%, transparent 100%);
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+
+    .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo span {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .search-wrap { position: relative; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 14px; }
+
+    .search {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px 9px 34px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search::placeholder { color: var(--text-dim); }
+    .search:focus { border-color: var(--accent); }
+
+    .nav { display: flex; gap: 8px; padding: 14px 20px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--border); }
+    .nav::-webkit-scrollbar { display: none; }
+
+    .nav-tab {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .nav-tab.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .nav-tab:active { opacity: 0.7; }
+
+    .content { flex: 1; padding: 16px 20px 60px; }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      margin-top: 20px;
+    }
+
+    .section-title:first-child { margin-top: 4px; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 12px; text-align: center; }
+    .stat-number { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; color: var(--accent); display: block; }
+    .stat-label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+
+    .phase-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .phase-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px; }
+    .phase-card[data-color="purple"]::before { background: var(--accent); }
+    .phase-card[data-color="green"]::before  { background: var(--green); }
+    .phase-card[data-color="amber"]::before  { background: var(--amber); }
+    .phase-card[data-color="cyan"]::before   { background: var(--cyan); }
+    .phase-card:active { transform: scale(0.98); }
+
+    .phase-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+
+    .phase-badge { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 6px; flex-shrink: 0; font-family: 'Syne', sans-serif; }
+    .phase-card[data-color="purple"] .phase-badge { background: var(--accent-soft); color: var(--accent); }
+    .phase-card[data-color="green"]  .phase-badge { background: var(--green-soft);  color: var(--green); }
+    .phase-card[data-color="amber"]  .phase-badge { background: var(--amber-soft);  color: var(--amber); }
+    .phase-card[data-color="cyan"]   .phase-badge { background: var(--cyan-soft);   color: var(--cyan); }
+
+    .phase-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--text); flex: 1; }
+    .phase-desc  { font-size: 13px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+    .phase-meta  { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+    .phase-count { font-size: 12px; color: var(--text-dim); }
+    .phase-status { font-size: 11px; font-weight: 600; font-family: 'Syne', sans-serif; margin-left: auto; }
+    .status-active  { color: var(--green); }
+    .status-pending { color: var(--text-dim); }
+
+    .progress-bar  { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: 10px; }
+    .progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+    .phase-card[data-color="purple"] .progress-fill { background: var(--accent); }
+    .phase-card[data-color="green"]  .progress-fill { background: var(--green); }
+    .phase-card[data-color="amber"]  .progress-fill { background: var(--amber); }
+    .phase-card[data-color="cyan"]   .progress-fill { background: var(--cyan); }
+
+    .knowledge-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: block;
+    }
+
+    .knowledge-card:active { transform: scale(0.98); border-color: var(--border-hover); }
+
+    .card-tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .card-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 5px; font-family: 'Syne', sans-serif; }
+    .tag-purple { background: var(--accent-soft); color: var(--accent); }
+    .tag-green  { background: var(--green-soft);  color: var(--green); }
+    .tag-amber  { background: var(--amber-soft);  color: var(--amber); }
+    .tag-cyan   { background: var(--cyan-soft);   color: var(--cyan); }
+
+    .card-title   { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 6px; }
+    .card-summary { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+    .card-footer  { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+    .card-date    { font-size: 11px; color: var(--text-dim); }
+    .card-expand  { font-size: 12px; color: var(--accent); font-weight: 600; }
+
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-dim); }
+    .empty-icon  { font-size: 40px; margin-bottom: 12px; display: block; }
+    .empty-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: var(--text-muted); margin-bottom: 6px; }
+    .empty-desc  { font-size: 13px; line-height: 1.5; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .fade-in { animation: fadeIn 0.3s ease; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-top">
+      <div class="logo">IA<span>Humana</span> — Conocimiento</div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search" type="text" placeholder="Buscar tarjeta..." oninput="handleSearch(this.value)" />
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-tab active" onclick="switchTab('home', this)">Inicio</button>
+    <button class="nav-tab" onclick="switchTab('fase1', this)">Fase 1</button>
+    <button class="nav-tab" onclick="switchTab('fase1b', this)">Fase 1.5</button>
+    <button class="nav-tab" onclick="switchTab('fase2', this)">Fase 2</button>
+    <button class="nav-tab" onclick="switchTab('fase3', this)">Fase 3</button>
+    <button class="nav-tab" onclick="switchTab('fase4', this)">Fase 4</button>
+  </div>
+
+  <div class="content" id="mainContent"></div>
+
+</div>
+
+<script>
+  // ─────────────────────────────────────────────────────────────────────
+  // TARJETAS — Para añadir una nueva, copia un objeto y edita sus campos.
+  // "url" apunta al archivo HTML de la tarjeta en el mismo repositorio.
+  // ─────────────────────────────────────────────────────────────────────
+  const CARDS = [
+    {
+      title: "Cómo funciona un LLM",
+      summary: "Predice, no piensa. El contexto es su memoria activa. Por eso alucina.",
+      phase: "fase1",
+      date: "Abr 2026",
+      url: "tarjeta-fase1-completa.html"
+    },
+    {
+      title: "¿Qué es un GPT?",
+      summary: "La arquitectura Transformer explicada desde adentro — 9 conceptos clave.",
+      phase: "fase1",
+      date: "Abr 2026",
+      url: "tarjeta-fase1-gpt.html"
+    },
+    {
+      title: "IA en el mundo real",
+      summary: "Prompt injection, vulnerabilidades reales y cómo usar IA con criterio.",
+      phase: "fase1",
+      date: "Abr 2026",
+      url: "tarjeta-fase1-prompt-injection.html"
+    }
+  ];
+
+  const PHASES = [
+    { id: 'fase1',  label: 'FASE 1',   title: 'Entender la máquina',       desc: 'Cómo funciona realmente un LLM: tokens, contexto, alucinaciones y límites estructurales.', color: 'purple', status: 'active' },
+    { id: 'fase1b', label: 'FASE 1.5', title: 'El ecosistema de modelos',   desc: 'Diferencias reales entre modelos: cuál usar, para qué y por qué importa elegir bien.',   color: 'green',  status: 'pending' },
+    { id: 'fase2',  label: 'FASE 2',   title: 'Prompting con criterio',     desc: 'Sistema para obtener resultados consistentes y superiores de cualquier modelo.',           color: 'amber',  status: 'pending' },
+    { id: 'fase3',  label: 'FASE 3',   title: 'IA como sistema de trabajo', desc: 'Integrar IA como capa de amplificación en trading, negocios y aprendizaje.',              color: 'cyan',   status: 'pending' },
+    { id: 'fase4',  label: 'FASE 4',   title: 'Construir con IA',           desc: 'Pasar de usuario avanzado a constructor: APIs, agentes, RAG y herramientas propias.',      color: 'purple', status: 'pending' }
+  ];
+
+  const TAG_COLORS = { fase1: 'tag-purple', fase1b: 'tag-green', fase2: 'tag-amber', fase3: 'tag-cyan', fase4: 'tag-purple' };
+  const TAG_LABELS = { fase1: 'Fase 1', fase1b: 'Fase 1.5', fase2: 'Fase 2', fase3: 'Fase 3', fase4: 'Fase 4' };
+
+  let currentTab = 'home';
+  let searchQuery = '';
+
+  function render() {
+    const el = document.getElementById('mainContent');
+    el.innerHTML = '';
+    el.classList.add('fade-in');
+    setTimeout(() => el.classList.remove('fade-in'), 300);
+    if (searchQuery) { renderSearch(el); return; }
+    if (currentTab === 'home') renderHome(el);
+    else renderPhase(el, currentTab);
+  }
+
+  function renderHome(el) {
+    const total = CARDS.length;
+    const activeFases = [...new Set(CARDS.map(c => c.phase))].length;
+    el.innerHTML = `
+      <div class="stats-row">
+        <div class="stat-card"><span class="stat-number">${total}</span><span class="stat-label">Tarjetas</span></div>
+        <div class="stat-card"><span class="stat-number">${activeFases}</span><span class="stat-label">Fases activas</span></div>
+        <div class="stat-card"><span class="stat-number">${PHASES.length}</span><span class="stat-label">Fases totales</span></div>
+      </div>
+      <p class="section-title">Tu ruta</p>
+      ${PHASES.map(p => renderPhaseCard(p)).join('')}
+    `;
+  }
+
+  function renderPhaseCard(p) {
+    const count = CARDS.filter(c => c.phase === p.id).length;
+    const progress = count > 0 ? Math.min(count * 25, 100) : 0;
+    const statusLabel = p.status === 'active' ? '● En curso' : 'Pendiente';
+    const statusClass = p.status === 'active' ? 'status-active' : 'status-pending';
+    return `
+      <div class="phase-card" data-color="${p.color}" onclick="switchTabById('${p.id}')">
+        <div class="phase-header">
+          <div class="phase-title">${p.title}</div>
+          <span class="phase-badge">${p.label}</span>
+        </div>
+        <p class="phase-desc">${p.desc}</p>
+        <div class="phase-meta">
+          <span class="phase-count">${count} tarjeta${count !== 1 ? 's' : ''}</span>
+          <span class="phase-status ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+      </div>
+    `;
+  }
+
+  function renderPhase(el, phaseId) {
+    const filtered = CARDS.filter(c => c.phase === phaseId);
+    const phase = PHASES.find(p => p.id === phaseId);
+    const label = phase ? phase.title : phaseId;
+    if (filtered.length === 0) {
+      el.innerHTML = `
+        <div class="empty-state">
+          <span class="empty-icon">📭</span>
+          <div class="empty-title">Sin tarjetas aún</div>
+          <p class="empty-desc">Esta fase todavía no tiene contenido.<br>Vuelve cuando esté en curso.</p>
+        </div>`;
+      return;
+    }
+    el.innerHTML = `<p class="section-title">${label}</p>${filtered.map(c => renderCardItem(c)).join('')}`;
+  }
+
+  function renderCardItem(card) {
+    const href = card.url || '#';
+    const target = card.url ? 'target="_blank"' : '';
+    return `
+      <a class="knowledge-card" href="${href}" ${target}>
+        <div class="card-tag-row">
+          <span class="card-tag ${TAG_COLORS[card.phase] || 'tag-purple'}">${TAG_LABELS[card.phase] || card.phase}</span>
+        </div>
+        <div class="card-title">${card.title}</div>
+        <div class="card-summary">${card.summary}</div>
+        <div class="card-footer">
+          <span class="card-date">${card.date}</span>
+          <span class="card-expand">${card.url ? 'Ver tarjeta →' : 'Próximamente'}</span>
+        </div>
+      </a>`;
+  }
+
+  function renderSearch(el) {
+    const q = searchQuery.toLowerCase();
+    const results = CARDS.filter(c => c.title.toLowerCase().includes(q) || c.summary.toLowerCase().includes(q));
+    if (results.length === 0) {
+      el.innerHTML = `<div class="empty-state"><span class="empty-icon">🔍</span><div class="empty-title">Sin resultados</div><p class="empty-desc">Nada para "${q}"</p></div>`;
+      return;
+    }
+    el.innerHTML = `<p class="section-title">${results.length} resultado${results.length !== 1 ? 's' : ''}</p>${results.map(c => renderCardItem(c)).join('')}`;
+  }
+
+  function switchTab(tab, btn) {
+    currentTab = tab; searchQuery = '';
+    document.querySelector('.search').value = '';
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  }
+
+  function switchTabById(tab) {
+    currentTab = tab;
+    const ids = ['home','fase1','fase1b','fase2','fase3','fase4'];
+    const btns = document.querySelectorAll('.nav-tab');
+    btns.forEach(t => t.classList.remove('active'));
+    const idx = ids.indexOf(tab);
+    if (btns[idx]) btns[idx].classList.add('active');
+    render();
+  }
+
+  function handleSearch(val) { searchQuery = val; render(); }
+
+  render();
+</script>
+</body>
+</html>
