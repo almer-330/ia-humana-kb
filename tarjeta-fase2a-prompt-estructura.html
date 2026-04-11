@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarjeta — Cómo hablarle a la IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #ffffff0f;
+      --accent: #7c6aff;
+      --accent-soft: #7c6aff18;
+      --green: #4ade80;
+      --green-soft: #4ade8018;
+      --amber: #fbbf24;
+      --amber-soft: #fbbf2418;
+      --cyan: #22d3ee;
+      --cyan-soft: #22d3ee18;
+      --red: #f87171;
+      --text: #e8e8f0;
+      --text-muted: #7878a0;
+      --text-dim: #4a4a6a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 24px 20px 60px;
+    }
+
+    .fase-badge {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: var(--amber-soft);
+      color: var(--amber);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 22px 0; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    .key-line {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      text-align: center;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* COMPONENT */
+    .component {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .component::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+    }
+
+    .c1::before { background: var(--accent); }
+    .c2::before { background: var(--green); }
+    .c3::before { background: var(--amber); }
+    .c4::before { background: var(--cyan); }
+    .c5::before { background: var(--red); }
+    .c6::before { background: #f472b6; }
+
+    .component-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .component-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      flex-shrink: 0;
+      width: 28px;
+    }
+
+    .c1 .component-num { color: var(--accent); }
+    .c2 .component-num { color: var(--green); }
+    .c3 .component-num { color: var(--amber); }
+    .c4 .component-num { color: var(--cyan); }
+    .c5 .component-num { color: var(--red); }
+    .c6 .component-num { color: #f472b6; }
+
+    .component-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .optional {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      font-family: 'Syne', sans-serif;
+      color: var(--text-dim);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 2px 7px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .component-what {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .component-what strong { color: var(--text); font-weight: 500; }
+
+    /* EXAMPLE COMPARISON */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .comp-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 13px;
+    }
+
+    .comp-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .comp-bad  .comp-label { color: var(--red); }
+    .comp-good .comp-label { color: var(--green); }
+
+    .comp-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    .comp-text strong { color: var(--text); font-style: normal; font-weight: 500; }
+
+    /* FULL EXAMPLE */
+    .full-example {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 14px;
+      padding: 18px;
+      margin-top: 10px;
+    }
+
+    .full-example-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .feb {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+
+    .feb:last-child { margin-bottom: 0; }
+
+    .feb-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 5px;
+    }
+
+    .feb-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* HIGHLIGHT */
+    .highlight {
+      background: var(--amber-soft);
+      border: 1px solid var(--amber);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 20px;
+    }
+
+    .highlight p {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .highlight p strong { font-style: normal; color: var(--amber); }
+
+    .footer { margin-top: 32px; font-size: 11px; color: var(--text-dim); text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="fase-badge">Fase 2A — Prompting con criterio</div>
+  <h1 class="card-title">Cómo hablarle a la IA</h1>
+  <p class="card-subtitle">La IA no lee tu mente. Cuanto mejor le explicas lo que necesitas, mejores resultados obtienes.</p>
+
+  <div class="key-line">
+    Un prompt es como pedirle un favor a alguien.<br>
+    <span style="color:var(--amber)">Entre más claro eres, mejor te ayuda.</span>
+  </div>
+
+  <div class="divider"></div>
+  <p class="section-label">Los 6 componentes</p>
+
+  <!-- 1 ROL -->
+  <div class="component c1">
+    <div class="component-header">
+      <span class="component-num">1</span>
+      <div class="component-title">Rol — ¿Desde dónde te habla?</div>
+    </div>
+    <div class="component-what">
+      Le dices al modelo qué tipo de persona debe ser para responderte. <strong>No es lo mismo pedirle ayuda a un médico que a un chef.</strong> El rol define desde dónde te habla.
+    </div>
+    <div class="comparison">
+      <div class="comp-box comp-bad">
+        <div class="comp-label">❌ Sin rol</div>
+        <div class="comp-text">"Ayúdame con mi alimentación."</div>
+      </div>
+      <div class="comp-box comp-good">
+        <div class="comp-label">✅ Con rol</div>
+        <div class="comp-text"><strong>"Eres un nutriólogo que explica de manera sencilla, sin tecnicismos."</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 CONTEXTO -->
+  <div class="component c2">
+    <div class="component-header">
+      <span class="component-num">2</span>
+      <div class="component-title">Contexto — ¿Quién eres tú?</div>
+    </div>
+    <div class="component-what">
+      Le explicas tu situación. <strong>El modelo no te conoce — si no le dices quién eres, adivina.</strong> Y cuando adivina, se equivoca.
+    </div>
+    <div class="comparison">
+      <div class="comp-box comp-bad">
+        <div class="comp-label">❌ Sin contexto</div>
+        <div class="comp-text">"Dame una rutina de ejercicio."</div>
+      </div>
+      <div class="comp-box comp-good">
+        <div class="comp-label">✅ Con contexto</div>
+        <div class="comp-text"><strong>"Soy principiante, sin equipo, con 30 minutos al día y rodilla lastimada."</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 TAREA -->
+  <div class="component c3">
+    <div class="component-header">
+      <span class="component-num">3</span>
+      <div class="component-title">Tarea — ¿Qué quieres exactamente?</div>
+    </div>
+    <div class="component-what">
+      La instrucción central. <strong>Una tarea por prompt.</strong> Si pides tres cosas a la vez, el modelo hace las tres a medias.
+    </div>
+    <div class="comparison">
+      <div class="comp-box comp-bad">
+        <div class="comp-label">❌ Varias tareas</div>
+        <div class="comp-text">"Dame recetas, lista del super y consejos para comer sano."</div>
+      </div>
+      <div class="comp-box comp-good">
+        <div class="comp-label">✅ Una tarea</div>
+        <div class="comp-text"><strong>"Dame 3 recetas fáciles para cenar entre semana."</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 FORMATO -->
+  <div class="component c4">
+    <div class="component-header">
+      <span class="component-num">4</span>
+      <div class="component-title">Formato — ¿Cómo quieres la respuesta?</div>
+    </div>
+    <div class="component-what">
+      Si no lo dices, el modelo elige por ti. <strong>Dile exactamente cómo necesitas recibir la información.</strong>
+    </div>
+    <div class="comparison">
+      <div class="comp-box comp-bad">
+        <div class="comp-label">❌ Sin formato</div>
+        <div class="comp-text">"Explícame cómo funciona el seguro de gastos médicos."</div>
+      </div>
+      <div class="comp-box comp-good">
+        <div class="comp-label">✅ Con formato</div>
+        <div class="comp-text"><strong>"Explícamelo en 3 puntos simples, como si tuviera 15 años."</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 RESTRICCIONES -->
+  <div class="component c5">
+    <div class="component-header">
+      <span class="component-num">5</span>
+      <div class="component-title">Restricciones — ¿Qué debe evitar?</div>
+    </div>
+    <div class="component-what">
+      Le dices lo que NO quieres. <strong>Ser específico en lo que no quieres elimina las respuestas genéricas antes de que aparezcan.</strong>
+    </div>
+    <div class="comparison">
+      <div class="comp-box comp-bad">
+        <div class="comp-label">❌ Sin restricción</div>
+        <div class="comp-text">"Dame consejos para ahorrar dinero."</div>
+      </div>
+      <div class="comp-box comp-good">
+        <div class="comp-label">✅ Con restricción</div>
+        <div class="comp-text"><strong>"Sin consejos obvios como 'gasta menos'. Algo que realmente se pueda hacer."</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 ANCLA -->
+  <div class="component c6">
+    <div class="component-header">
+      <span class="component-num">6</span>
+      <div class="component-title">Ejemplo o ancla <span class="optional">Opcional</span></div>
+    </div>
+    <div class="component-what">
+      Le muestras cómo se ve una buena respuesta. <strong>Ver un ejemplo es más poderoso que describir con palabras.</strong> Úsalo cuando necesitas un tono o estilo específico.
+    </div>
+    <div class="comparison">
+      <div class="comp-box comp-bad">
+        <div class="comp-label">❌ Sin ancla</div>
+        <div class="comp-text">"Escribe de manera cercana y sencilla."</div>
+      </div>
+      <div class="comp-box comp-good">
+        <div class="comp-label">✅ Con ancla</div>
+        <div class="comp-text"><strong>"Escribe como este ejemplo: 'Ahorrar no es sufrir — es decidir qué importa más.'"</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- EJEMPLO COMPLETO -->
+  <p class="section-label">Prompt completo — ejemplo real</p>
+
+  <div class="full-example">
+    <div class="full-example-label">✍️ Los 6 componentes en acción</div>
+
+    <div class="feb">
+      <div class="feb-label">Rol</div>
+      <div class="feb-text">Eres un nutriólogo que explica de manera simple, sin términos médicos complicados.</div>
+    </div>
+    <div class="feb">
+      <div class="feb-label">Contexto</div>
+      <div class="feb-text">Soy una persona ocupada, cocino poco, no soy experto en nutrición y quiero comer mejor sin complicarme la vida.</div>
+    </div>
+    <div class="feb">
+      <div class="feb-label">Tarea</div>
+      <div class="feb-text">Dame 3 cambios pequeños que pueda hacer esta semana para comer más sano.</div>
+    </div>
+    <div class="feb">
+      <div class="feb-label">Formato</div>
+      <div class="feb-text">Un cambio por punto, con una explicación de por qué ayuda en una sola oración.</div>
+    </div>
+    <div class="feb">
+      <div class="feb-label">Restricciones</div>
+      <div class="feb-text">Sin dietas estrictas, sin eliminar grupos de alimentos, sin suplementos.</div>
+    </div>
+    <div class="feb">
+      <div class="feb-label">Ancla</div>
+      <div class="feb-text">Tono que busco: práctico y directo, como un amigo que sabe del tema — no como un manual médico.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="highlight">
+    <p>La diferencia entre una respuesta genérica y una respuesta útil casi siempre está en el prompt — no en el modelo. <strong>Un buen prompt no es escribir más. Es escribir con intención.</strong></p>
+  </div>
+
+  <div class="footer">Fase 2A · IA Humana · Conocimiento propio</div>
+
+</body>
+</html>

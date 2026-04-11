@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarjeta — El ecosistema de modelos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #ffffff0f;
+      --accent: #7c6aff;
+      --accent-soft: #7c6aff18;
+      --green: #4ade80;
+      --green-soft: #4ade8018;
+      --amber: #fbbf24;
+      --amber-soft: #fbbf2418;
+      --red: #f87171;
+      --red-soft: #f8717118;
+      --cyan: #22d3ee;
+      --cyan-soft: #22d3ee18;
+      --text: #e8e8f0;
+      --text-muted: #7878a0;
+      --text-dim: #4a4a6a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 24px 20px 60px;
+    }
+
+    .fase-badge {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: var(--green-soft);
+      color: var(--green);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 22px 0; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    /* KEY LINE */
+    .key-line {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      text-align: center;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* CAPACITY BAR */
+    .capacity-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .cap-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .cap-icon { font-size: 24px; display: block; margin-bottom: 8px; }
+
+    .cap-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .cap-card:first-child .cap-title { color: var(--accent); }
+    .cap-card:last-child .cap-title  { color: var(--green); }
+
+    .cap-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    /* FAMILY CARDS */
+    .family {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .family::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+    .f-purple::before { background: var(--accent); }
+    .f-green::before  { background: var(--green); }
+    .f-cyan::before   { background: var(--cyan); }
+    .f-amber::before  { background: var(--amber); }
+
+    .family-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+
+    .family-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .family-badge {
+      font-size: 10px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+
+    .f-purple .family-badge { background: var(--accent-soft); color: var(--accent); }
+    .f-green  .family-badge { background: var(--green-soft);  color: var(--green); }
+    .f-cyan   .family-badge { background: var(--cyan-soft);   color: var(--cyan); }
+    .f-amber  .family-badge { background: var(--amber-soft);  color: var(--amber); }
+
+    .family-models { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+
+    .model-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'Syne', sans-serif;
+    }
+
+    .family-desc { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+    .family-desc strong { color: var(--text); font-weight: 500; }
+
+    /* CRITERIA TABLE */
+    .criteria-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .criteria-table th {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: var(--surface);
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .criteria-table td {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+      vertical-align: top;
+    }
+
+    .criteria-table tr:last-child td { border-bottom: none; }
+    .criteria-table td:first-child { color: var(--text); font-weight: 500; font-size: 13px; }
+
+    /* MY STACK */
+    .stack {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 10px;
+    }
+
+    .stack-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .stack-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .stack-item:last-child { margin-bottom: 0; }
+
+    .stack-model {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--accent);
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 3px 9px;
+      flex-shrink: 0;
+    }
+
+    .stack-use { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .stack-use strong { color: var(--text); font-weight: 500; }
+
+    /* HIGHLIGHT */
+    .highlight {
+      background: var(--green-soft);
+      border: 1px solid var(--green);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 20px;
+    }
+
+    .highlight p {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .highlight p strong { font-style: normal; color: var(--green); }
+
+    .footer { margin-top: 32px; font-size: 11px; color: var(--text-dim); text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="fase-badge">Fase 1.5 — El ecosistema de modelos</div>
+  <h1 class="card-title">El ecosistema de modelos</h1>
+  <p class="card-subtitle">Ningún modelo es mejor en todo. Tu trabajo es saber cuál usar y para qué.</p>
+
+  <div class="divider"></div>
+
+  <!-- REGLA BASE -->
+  <p class="section-label">La regla base</p>
+
+  <div class="key-line">
+    Ningún modelo es mejor en todo.<br>
+    <span style="color:var(--green)">Tu trabajo es elegir el correcto para cada situación.</span>
+  </div>
+
+  <div class="capacity-row">
+    <div class="cap-card">
+      <span class="cap-icon">🧠</span>
+      <div class="cap-title">Más capacidad</div>
+      <div class="cap-desc">Más lento. Más costoso. Mejor en tareas complejas.</div>
+    </div>
+    <div class="cap-card">
+      <span class="cap-icon">⚡</span>
+      <div class="cap-title">Menos capacidad</div>
+      <div class="cap-desc">Más rápido. Más barato. Ideal para tareas simples.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FAMILIAS -->
+  <p class="section-label">Las 4 familias</p>
+
+  <div class="family f-purple">
+    <div class="family-header">
+      <div class="family-name">Anthropic — Claude</div>
+      <span class="family-badge">Tu herramienta principal</span>
+    </div>
+    <div class="family-models">
+      <span class="model-tag">Haiku</span>
+      <span class="model-tag">Sonnet</span>
+      <span class="model-tag">Opus</span>
+    </div>
+    <div class="family-desc">
+      <strong>Haiku</strong> — rápido y económico para tareas simples.<br>
+      <strong>Sonnet</strong> — el equilibrio perfecto. Tu default diario.<br>
+      <strong>Opus</strong> — máxima capacidad para razonamiento complejo.
+    </div>
+  </div>
+
+  <div class="family f-green">
+    <div class="family-header">
+      <div class="family-name">OpenAI — GPT</div>
+      <span class="family-badge">Referencia del mercado</span>
+    </div>
+    <div class="family-models">
+      <span class="model-tag">GPT-4o</span>
+      <span class="model-tag">o1 / o3</span>
+      <span class="model-tag">GPT-4.5</span>
+    </div>
+    <div class="family-desc">
+      <strong>GPT-4o</strong> — rápido, multimodal (texto, imagen, audio).<br>
+      <strong>o1 / o3</strong> — razonamiento lento y profundo. Piensa antes de responder.<br>
+      <strong>GPT-4.5</strong> — conversación natural más avanzada.
+    </div>
+  </div>
+
+  <div class="family f-cyan">
+    <div class="family-header">
+      <div class="family-name">Google — Gemini</div>
+      <span class="family-badge">Contexto enorme</span>
+    </div>
+    <div class="family-models">
+      <span class="model-tag">Flash</span>
+      <span class="model-tag">Pro</span>
+      <span class="model-tag">Ultra</span>
+    </div>
+    <div class="family-desc">
+      Ventaja principal: <strong>contexto más grande del mercado</strong> y integración nativa con el ecosistema Google. Ideal para documentos muy largos.
+    </div>
+  </div>
+
+  <div class="family f-amber">
+    <div class="family-header">
+      <div class="family-name">Modelos abiertos</div>
+      <span class="family-badge">Gratuitos y privados</span>
+    </div>
+    <div class="family-models">
+      <span class="model-tag">Llama</span>
+      <span class="model-tag">Mistral</span>
+      <span class="model-tag">DeepSeek</span>
+    </div>
+    <div class="family-desc">
+      Puedes correrlos en tu propia computadora sin pagar APIs. <strong>DeepSeek</strong> sorprendió al mundo con rendimiento comparable a GPT-4 a fracción del costo. Ideales para experimentar sin presupuesto.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CRITERIO -->
+  <p class="section-label">Cuándo usar cada uno</p>
+
+  <table class="criteria-table">
+    <tr>
+      <th>Situación</th>
+      <th>Modelo ideal</th>
+    </tr>
+    <tr>
+      <td>Conversación y preguntas rápidas</td>
+      <td>Haiku / Flash</td>
+    </tr>
+    <tr>
+      <td>Trabajo diario, análisis, código</td>
+      <td>Sonnet ← tu default</td>
+    </tr>
+    <tr>
+      <td>Razonamiento complejo, estrategia</td>
+      <td>Opus / o1 / o3</td>
+    </tr>
+    <tr>
+      <td>Documentos muy largos</td>
+      <td>Gemini Flash</td>
+    </tr>
+    <tr>
+      <td>Investigación con fuentes reales</td>
+      <td>Perplexity</td>
+    </tr>
+    <tr>
+      <td>Sin presupuesto, privacidad</td>
+      <td>DeepSeek / Llama</td>
+    </tr>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- MI STACK -->
+  <p class="section-label">Tu stack recomendado</p>
+
+  <div class="stack">
+    <div class="stack-label">⚡ Stack para trading, finanzas y proyectos IA</div>
+    <div class="stack-item">
+      <span class="stack-model">Sonnet</span>
+      <div class="stack-use"><strong>Herramienta principal del día a día</strong> — prompts, análisis, aprendizaje, código.</div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-model">Opus</span>
+      <div class="stack-use"><strong>Razonamiento profundo</strong> — análisis complejos de mercado, estrategia, decisiones importantes.</div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-model">Perplexity</span>
+      <div class="stack-use"><strong>Investigación verificable</strong> — noticias, datos actuales, fuentes reales.</div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-model">DeepSeek</span>
+      <div class="stack-use"><strong>Experimentación sin costo</strong> — probar ideas, proyectos sin presupuesto.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="highlight">
+    <p>El ecosistema cambia cada semana. Lo que no cambia es el criterio para elegir: <strong>entiende qué necesitas, conoce las fortalezas de cada modelo, y elige con intención — no por costumbre.</strong></p>
+  </div>
+
+  <div class="footer">Fase 1.5 · IA Humana · Conocimiento propio</div>
+
+</body>
+</html>
