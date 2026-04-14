@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema del canal — IA Humana</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #ffffff0f;
+      --accent: #7c6aff;
+      --accent-soft: #7c6aff18;
+      --green: #4ade80;
+      --green-soft: #4ade8018;
+      --amber: #fbbf24;
+      --amber-soft: #fbbf2418;
+      --cyan: #22d3ee;
+      --cyan-soft: #22d3ee18;
+      --pink: #f472b6;
+      --pink-soft: #f472b618;
+      --text: #e8e8f0;
+      --text-muted: #7878a0;
+      --text-dim: #4a4a6a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 24px 20px 60px;
+    }
+
+    .fase-badge {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 22px 0; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    /* PRINCIPIO */
+    .principio {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .principio-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .principio-text {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .principio-text strong { font-style: normal; color: var(--accent); }
+
+    /* FUENTES GRID */
+    .fuentes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .fuente-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+
+    .fuente-icon { font-size: 20px; display: block; margin-bottom: 6px; }
+
+    .fuente-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .fuente-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+    /* FLOW BLOCK */
+    .flow-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .flow-header {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .flow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-diario  { background: var(--accent); }
+    .dot-canal   { background: var(--green); }
+    .dot-calidad { background: var(--amber); }
+    .dot-metrica { background: var(--cyan); }
+    .dot-semanas { background: #f472b6; }
+
+    .flow-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .flow-time {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+    }
+
+    .flow-body {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .flow-body strong { color: var(--text); font-weight: 500; }
+
+    .prompt-inline {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* POST TYPES */
+    .post-type {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .post-type-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .pt1 .post-type-num { color: var(--accent); }
+    .pt2 .post-type-num { color: var(--green); }
+    .pt3 .post-type-num { color: var(--amber); }
+
+    .post-type-content { flex: 1; }
+
+    .post-type-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .post-type-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .post-type-example { font-size: 12px; color: var(--text-dim); font-style: italic; margin-top: 4px; }
+
+    /* PIPELINE STEPS */
+    .pipeline-steps {
+      counter-reset: step;
+    }
+
+    .pip-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .pip-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      flex-shrink: 0;
+      width: 24px;
+    }
+
+    .pip-item:nth-child(1) .pip-num { color: var(--accent); }
+    .pip-item:nth-child(2) .pip-num { color: var(--green); }
+    .pip-item:nth-child(3) .pip-num { color: var(--amber); }
+    .pip-item:nth-child(4) .pip-num { color: var(--cyan); }
+    .pip-item:nth-child(5) .pip-num { color: #f472b6; }
+
+    .pip-content { flex: 1; }
+    .pip-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--text); margin-bottom: 2px; }
+    .pip-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .pip-time { font-size: 11px; color: var(--text-dim); font-family: 'Syne', sans-serif; font-weight: 600; flex-shrink: 0; }
+
+    /* QUALITY FILTER */
+    .quality-filter {
+      background: var(--amber-soft);
+      border: 1px solid var(--amber);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+
+    .quality-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 12px;
+    }
+
+    .quality-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .quality-item:last-child { margin-bottom: 0; }
+    .quality-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .quality-text { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .quality-text strong { color: var(--text); font-weight: 500; }
+
+    /* 8 WEEKS TABLE */
+    .weeks-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .weeks-table th {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: var(--surface);
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .weeks-table td {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+      vertical-align: top;
+    }
+
+    .weeks-table tr:last-child td { border-bottom: none; }
+    .weeks-table td:first-child { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--accent); font-size: 12px; }
+
+    /* METRIC */
+    .metric-card {
+      background: var(--cyan-soft);
+      border: 1px solid var(--cyan);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .metric-icon { font-size: 28px; flex-shrink: 0; }
+
+    .metric-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .metric-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    /* HIGHLIGHT */
+    .highlight {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 20px;
+    }
+
+    .highlight p {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .highlight p strong { font-style: normal; color: var(--accent); }
+
+    .footer { margin-top: 32px; font-size: 11px; color: var(--text-dim); text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="fase-badge">Fase 3A — Sistema del canal</div>
+  <h1 class="card-title">Sistema del canal IA Humana</h1>
+  <p class="card-subtitle">Un flujo claro para publicar con consistencia sin que el canal compita con tu aprendizaje.</p>
+
+  <!-- PRINCIPIO -->
+  <div class="principio">
+    <div class="principio-label">⚡ El principio que lo gobierna</div>
+    <div class="principio-text"><strong>No creas contenido nuevo.</strong> Documentas lo que ya aprendes y construyes — de manera que cualquiera pueda entenderlo.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FUENTES -->
+  <p class="section-label">De dónde viene el contenido</p>
+
+  <div class="fuentes-grid">
+    <div class="fuente-card">
+      <span class="fuente-icon">🧠</span>
+      <div class="fuente-title">Lo que aprendes</div>
+      <div class="fuente-desc">Cada concepto dominado es un post. Las tarjetas son material directo.</div>
+    </div>
+    <div class="fuente-card">
+      <span class="fuente-icon">🔧</span>
+      <div class="fuente-title">Lo que construyes</div>
+      <div class="fuente-desc">Cada proyecto terminado es un post. Explica el problema que resuelve.</div>
+    </div>
+    <div class="fuente-card">
+      <span class="fuente-icon">💡</span>
+      <div class="fuente-title">Lo que descubres</div>
+      <div class="fuente-desc">Una herramienta, conexión entre conceptos o error que te enseñó algo.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FLUJO SEMANAL -->
+  <p class="section-label">Flujo semanal</p>
+
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot dot-diario"></div>
+      <div class="flow-title">Día de estudio — al cerrar</div>
+      <span class="flow-time">5 min</span>
+    </div>
+    <div class="flow-body">
+      Al terminar tu sesión de Python o IA te preguntas:
+      <div class="prompt-inline">"¿Hay algo de lo que aprendí hoy que le sería útil a alguien que está empezando?"</div>
+      Si sí — lo marcas como posible post. No lo escribes todavía.
+    </div>
+  </div>
+
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot dot-canal"></div>
+      <div class="flow-title">Día de canal — 1 vez por semana</div>
+      <span class="flow-time">60–90 min</span>
+    </div>
+    <div class="flow-body">
+      Sigues el pipeline de 5 pasos en orden. <strong>No se salta ninguno.</strong>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PIPELINE -->
+  <p class="section-label">Pipeline de producción — 5 pasos</p>
+
+  <div class="pipeline-steps">
+    <div class="pip-item">
+      <span class="pip-num">1</span>
+      <div class="pip-content">
+        <div class="pip-title">Elegir el tema</div>
+        <div class="pip-desc">Revisas lo marcado durante la semana. Si no tienes nada — usas el Prompt 1. Si tienes una tarjeta para reutilizar — vas directo al Paso 2.</div>
+      </div>
+      <span class="pip-time">5 min</span>
+    </div>
+    <div class="pip-item">
+      <span class="pip-num">2</span>
+      <div class="pip-content">
+        <div class="pip-title">Crear el post</div>
+        <div class="pip-desc">Usas el Prompt 2. Iteras hasta que el tono sea tuyo. Aplica el filtro de calidad antes de avanzar.</div>
+      </div>
+      <span class="pip-time">15–20 min</span>
+    </div>
+    <div class="pip-item">
+      <span class="pip-num">3</span>
+      <div class="pip-content">
+        <div class="pip-title">Formatear para Telegram</div>
+        <div class="pip-desc">Usas el Prompt 3. El post queda listo para publicar.</div>
+      </div>
+      <span class="pip-time">5 min</span>
+    </div>
+    <div class="pip-item">
+      <span class="pip-num">4</span>
+      <div class="pip-content">
+        <div class="pip-title">Crear el video con Luma Labs</div>
+        <div class="pip-desc">Usas el Prompt 4. Genera el concepto visual y el prompt para el video.</div>
+      </div>
+      <span class="pip-time">10–15 min</span>
+    </div>
+    <div class="pip-item">
+      <span class="pip-num">5</span>
+      <div class="pip-content">
+        <div class="pip-title">Publicar</div>
+        <div class="pip-desc">Post + video listos. Publicas en el canal.</div>
+      </div>
+      <span class="pip-time">5 min</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TIPOS DE POST -->
+  <p class="section-label">Los 3 tipos de post</p>
+
+  <div class="post-type pt1">
+    <span class="post-type-num">1</span>
+    <div class="post-type-content">
+      <div class="post-type-title">Concepto explicado simple</div>
+      <div class="post-type-desc">Algo que aprendiste, explicado como si se lo contaras a alguien que no sabe nada.</div>
+      <div class="post-type-example">"¿Por qué la IA alucina? No es un bug — es cómo funciona."</div>
+    </div>
+  </div>
+
+  <div class="post-type pt2">
+    <span class="post-type-num">2</span>
+    <div class="post-type-content">
+      <div class="post-type-title">Proyecto documentado</div>
+      <div class="post-type-desc">Algo que construiste — qué problema resuelve y cómo replicarlo con herramientas gratuitas.</div>
+      <div class="post-type-example">"Construí un bot que resume noticias de IA. Herramientas gratuitas. Así funciona."</div>
+    </div>
+  </div>
+
+  <div class="post-type pt3">
+    <span class="post-type-num">3</span>
+    <div class="post-type-content">
+      <div class="post-type-title">Reflexión del proceso</div>
+      <div class="post-type-desc">Algo que descubriste — un error, una conexión inesperada, algo que entendiste diferente.</div>
+      <div class="post-type-example">"Llevo 3 meses aprendiendo Python y esto es lo que nadie te dice que pasa."</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FILTRO DE CALIDAD -->
+  <p class="section-label">Filtro de calidad — antes de publicar</p>
+
+  <div class="quality-filter">
+    <div class="quality-label">✅ Las tres sí — publicas</div>
+    <div class="quality-item">
+      <span class="quality-icon">1️⃣</span>
+      <div class="quality-text"><strong>¿Lo entendería alguien que no sabe nada de IA?</strong> Si hay términos sin explicar — no está listo.</div>
+    </div>
+    <div class="quality-item">
+      <span class="quality-icon">2️⃣</span>
+      <div class="quality-text"><strong>¿El tono es mío o del modelo?</strong> Si suena como respuesta de IA — itera una vez más.</div>
+    </div>
+    <div class="quality-item">
+      <span class="quality-icon">3️⃣</span>
+      <div class="quality-text"><strong>¿Aporta algo real o es contenido por cumplir?</strong> Si no te parece útil a ti — no le parecerá útil a nadie.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 8 SEMANAS -->
+  <p class="section-label">Plan de las primeras 8 semanas</p>
+
+  <table class="weeks-table">
+    <tr>
+      <th>Sem</th>
+      <th>Post</th>
+      <th>Tipo</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>¿Qué es un LLM y cómo funciona?</td>
+      <td>Concepto</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>¿Qué es un GPT? La arquitectura Transformer</td>
+      <td>Concepto</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>IA en el mundo real — alucinaciones y prompt injection</td>
+      <td>Concepto</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>El ecosistema de modelos — cuál usar y para qué</td>
+      <td>Concepto</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Cómo hablarle a la IA — los 6 componentes</td>
+      <td>Concepto</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Técnicas avanzadas de prompting</td>
+      <td>Concepto</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Prompts para aprender mejor</td>
+      <td>Proyecto</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Prompts para organizarte mejor</td>
+      <td>Proyecto</td>
+    </tr>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- MÉTRICA -->
+  <p class="section-label">Métrica mínima de crecimiento</p>
+
+  <div class="metric-card">
+    <span class="metric-icon">📊</span>
+    <div>
+      <div class="metric-label">Visualizaciones por post — cada domingo</div>
+      <div class="metric-desc">Una sola métrica. Anótala junto con tu revisión semanal de Python. Después de 8 semanas sabrás qué tipo de post conecta más con tu audiencia.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- LO QUE NO HACE -->
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot" style="background:var(--text-dim)"></div>
+      <div class="flow-title">Lo que NO hace este sistema</div>
+    </div>
+    <div class="flow-body">
+      <strong>No planea más allá de 8 semanas</strong> — genera presión innecesaria ahora.<br><br>
+      <strong>No obliga a publicar si no hubo aprendizaje real</strong> — si no aprendiste nada, no hay post.<br><br>
+      <strong>No compite con tu tiempo de Python</strong> — el día de canal es independiente de tus sesiones de estudio.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="highlight">
+    <p>El canal crece contigo — no a pesar de ti. <strong>Cada cosa que aprendes es contenido. Cada proyecto que construyes es contenido.</strong> El sistema solo lo captura.</p>
+  </div>
+
+  <div class="footer">Fase 3A · IA Humana · Sistema del canal</div>
+
+</body>
+</html>

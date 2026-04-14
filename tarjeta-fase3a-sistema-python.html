@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de estudio Python</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #ffffff0f;
+      --accent: #7c6aff;
+      --accent-soft: #7c6aff18;
+      --green: #4ade80;
+      --green-soft: #4ade8018;
+      --amber: #fbbf24;
+      --amber-soft: #fbbf2418;
+      --red: #f87171;
+      --red-soft: #f8717118;
+      --cyan: #22d3ee;
+      --cyan-soft: #22d3ee18;
+      --text: #e8e8f0;
+      --text-muted: #7878a0;
+      --text-dim: #4a4a6a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 24px 20px 60px;
+    }
+
+    .fase-badge {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 22px 0; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    /* OBJETIVO */
+    .objetivo {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .objetivo-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .objetivo-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .objetivo-text strong { font-style: normal; color: var(--accent); }
+
+    /* SESSION TYPES */
+    .session-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .session-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .session-icon { font-size: 22px; display: block; margin-bottom: 8px; }
+
+    .session-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .session-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    /* FLOW */
+    .flow-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .flow-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .flow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-before  { background: var(--accent); }
+    .dot-during  { background: var(--green); }
+    .dot-after   { background: var(--amber); }
+    .dot-min     { background: var(--cyan); }
+    .dot-block   { background: var(--red); }
+    .dot-weekly  { background: #f472b6; }
+    .dot-recover { background: var(--amber); }
+    .dot-connect { background: var(--cyan); }
+    .dot-advance { background: var(--green); }
+
+    .flow-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .flow-time {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-left: auto;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+    }
+
+    .flow-body {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .flow-body strong { color: var(--text); font-weight: 500; }
+
+    .prompt-inline {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* TABLE */
+    .phase-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .phase-table th {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: var(--surface);
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .phase-table td {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+      vertical-align: top;
+    }
+
+    .phase-table tr:last-child td { border-bottom: none; }
+    .phase-table td:first-child { font-weight: 600; color: var(--text); font-size: 13px; }
+
+    /* CHECKLIST */
+    .checklist {
+      background: var(--green-soft);
+      border: 1px solid var(--green);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 10px;
+    }
+
+    .checklist-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .check-item:last-child { margin-bottom: 0; }
+
+    .check-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .check-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .check-text strong { color: var(--text); font-weight: 500; }
+
+    /* HIGHLIGHT */
+    .highlight {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 20px;
+    }
+
+    .highlight p {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .highlight p strong { font-style: normal; color: var(--accent); }
+
+    .footer { margin-top: 32px; font-size: 11px; color: var(--text-dim); text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="fase-badge">Fase 3A — IA como sistema de trabajo</div>
+  <h1 class="card-title">Sistema de estudio Python</h1>
+  <p class="card-subtitle">Un flujo claro para cada sesión — sin decidir qué hacer cada vez que te sientas a estudiar.</p>
+
+  <!-- OBJETIVO -->
+  <div class="objetivo">
+    <div class="objetivo-label">🎯 El objetivo que conecta todo</div>
+    <div class="objetivo-text"><strong>Python es el puente</strong> hacia trading cuantitativo, algoritmos y proyectos de IA propios. Cada sesión no es estudiar por estudiar — es construir la herramienta que necesitas para lo que realmente quieres.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TIPOS DE SESIÓN -->
+  <p class="section-label">Dos tipos de sesión</p>
+  <div class="session-grid">
+    <div class="session-card">
+      <span class="session-icon">🔥</span>
+      <div class="session-title">Sesión completa</div>
+      <div class="session-desc">45 minutos o más. Concepto nuevo + ejercicio + cierre.</div>
+    </div>
+    <div class="session-card">
+      <span class="session-icon">⚡</span>
+      <div class="session-title">Sesión mínima</div>
+      <div class="session-desc">15-20 minutos. Existe, cuenta y no se salta.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FLUJO SESIÓN COMPLETA -->
+  <p class="section-label">Flujo de sesión completa</p>
+
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot dot-before"></div>
+      <div class="flow-title">Antes</div>
+      <span class="flow-time">2 min</span>
+    </div>
+    <div class="flow-body">
+      Abre tu tutor IA y dile:
+      <div class="prompt-inline">"Estoy en [fase actual]. La última vez trabajé [tema]. ¿Qué trabajamos hoy y cómo empezamos?"</div>
+    </div>
+  </div>
+
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot dot-during"></div>
+      <div class="flow-title">Durante</div>
+      <span class="flow-time">El tiempo que tengas</span>
+    </div>
+    <div class="flow-body">
+      Trabajas con el tutor en el concepto del día. <strong>El curso que compraste ilustra — el tutor guía.</strong> Cuando quieras ver algo en video, búscalo en el curso.
+    </div>
+  </div>
+
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot dot-block"></div>
+      <div class="flow-title">Protocolo de bloqueo</div>
+    </div>
+    <div class="flow-body">
+      Cuando llevas 10 minutos sin avanzar:
+      <div class="prompt-inline">"Llevo 10 minutos atascado en [punto específico]. Explícamelo de otra manera con una analogía diferente."</div>
+      Si después de dos intentos no queda claro — lo marcas como pendiente y avanzas. <strong>Los bloqueos no terminan la sesión.</strong>
+    </div>
+  </div>
+
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot dot-after"></div>
+      <div class="flow-title">Cierre</div>
+      <span class="flow-time">3 min</span>
+    </div>
+    <div class="flow-body">
+      <div class="prompt-inline">"Resume en 3 líneas qué aprendí hoy, qué quedó pendiente y qué sigue."</div>
+      Ese resumen va a tu web app. <strong>No es opcional.</strong>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FLUJO SESIÓN MÍNIMA -->
+  <p class="section-label">Flujo de sesión mínima</p>
+
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot dot-min"></div>
+      <div class="flow-title">Elige una opción</div>
+      <span class="flow-time">15-20 min</span>
+    </div>
+    <div class="flow-body">
+      <strong>Opción A — Repaso:</strong>
+      <div class="prompt-inline">"En 5 minutos, hazme 3 preguntas rápidas sobre lo que vimos la última vez."</div>
+      <br>
+      <strong>Opción B — Ejercicio pequeño:</strong>
+      <div class="prompt-inline">"Dame un ejercicio de 10 minutos sobre [último concepto trabajado]."</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PROYECTOS ANCLA -->
+  <p class="section-label">Proyecto ancla por fase</p>
+
+  <table class="phase-table">
+    <tr>
+      <th>Fase</th>
+      <th>Proyecto ancla</th>
+      <th>Tiempo ref.</th>
+    </tr>
+    <tr>
+      <td>Fundamentos</td>
+      <td>Script que automatice una tarea repetitiva</td>
+      <td>3-4 sem</td>
+    </tr>
+    <tr>
+      <td>Funciones</td>
+      <td>Bot simple que responda desde un archivo</td>
+      <td>2-3 sem</td>
+    </tr>
+    <tr>
+      <td>APIs</td>
+      <td>Script que consuma una API y muestre datos</td>
+      <td>2-3 sem</td>
+    </tr>
+    <tr>
+      <td>Pandas</td>
+      <td>Análisis de precios históricos de un activo</td>
+      <td>3-4 sem</td>
+    </tr>
+    <tr>
+      <td>Proyectos IA</td>
+      <td>Herramienta que uses tú en tu día a día</td>
+      <td>Sin límite</td>
+    </tr>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- REVISIÓN SEMANAL -->
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot dot-weekly"></div>
+      <div class="flow-title">Revisión semanal — cada domingo</div>
+      <span class="flow-time">10 min</span>
+    </div>
+    <div class="flow-body">
+      <div class="prompt-inline">"Esta semana estudié [temas]. Completé [número] de 4 sesiones. ¿Qué patrón ves en lo que me costó más y qué ajustarías para la próxima semana?"</div>
+      Si completaste menos de 3 sesiones — no te castigas. Te preguntas qué lo impidió y ajustas. <strong>El sistema se adapta a ti, no al revés.</strong>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PROTOCOLO DE RECUPERACIÓN -->
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot dot-recover"></div>
+      <div class="flow-title">Protocolo de recuperación</div>
+    </div>
+    <div class="flow-body">
+      Si pasan más de 2 semanas sin estudiar — <strong>no retomas desde donde dejaste.</strong> Primera sesión de regreso siempre es repaso:
+      <div class="prompt-inline">"Estuve [X tiempo] sin estudiar. Hazme un repaso rápido de los últimos 3 conceptos que trabajamos. Quiero verificar qué recuerdo antes de avanzar."</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CONEXIÓN CON OTROS PILARES -->
+  <div class="flow-block">
+    <div class="flow-header">
+      <div class="flow-dot dot-connect"></div>
+      <div class="flow-title">Conexión con otros pilares</div>
+    </div>
+    <div class="flow-body">
+      Al final de cada fase — antes de avanzar:
+      <div class="prompt-inline">"Con lo que aprendí en esta fase de Python, ¿qué podría construir o mejorar en trading, IA o mis proyectos actuales?"</div>
+      Si puedes responderla con un ejemplo concreto — el conocimiento es real.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CRITERIO DE AVANCE -->
+  <p class="section-label">Criterio de avance de fase</p>
+
+  <div class="checklist">
+    <div class="checklist-label">✅ Las cuatro sí — avanzas</div>
+    <div class="check-item">
+      <span class="check-icon">1️⃣</span>
+      <div class="check-text"><strong>¿Puedo explicarlo con mis propias palabras?</strong></div>
+    </div>
+    <div class="check-item">
+      <span class="check-icon">2️⃣</span>
+      <div class="check-text"><strong>¿Puedo dar un ejemplo propio sin ayuda?</strong></div>
+    </div>
+    <div class="check-item">
+      <span class="check-icon">3️⃣</span>
+      <div class="check-text"><strong>¿El proyecto ancla está completo y revisado?</strong></div>
+    </div>
+    <div class="check-item">
+      <span class="check-icon">4️⃣</span>
+      <div class="check-text"><strong>¿Puedo conectarlo con trading o proyectos IA con un ejemplo concreto?</strong></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="highlight">
+    <p>Un sistema que se ejecuta al 80% todos los días vale más que uno perfecto que nunca arranca. <strong>El sistema se adapta a ti — no al revés.</strong></p>
+  </div>
+
+  <div class="footer">Fase 3A · IA Humana · Sistema de trabajo · Python</div>
+
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompts para organizarte mejor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #ffffff0f;
+      --accent: #7c6aff;
+      --accent-soft: #7c6aff18;
+      --green: #4ade80;
+      --green-soft: #4ade8018;
+      --amber: #fbbf24;
+      --amber-soft: #fbbf2418;
+      --cyan: #22d3ee;
+      --cyan-soft: #22d3ee18;
+      --text: #e8e8f0;
+      --text-muted: #7878a0;
+      --text-dim: #4a4a6a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 24px 20px 60px;
+    }
+
+    .fase-badge {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: var(--cyan-soft);
+      color: var(--cyan);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    .prompt-block { margin-bottom: 32px; }
+
+    .prompt-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .prompt-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .p1 .prompt-num { color: var(--cyan); }
+    .p2 .prompt-num { color: var(--amber); }
+    .p3 .prompt-num { color: var(--accent); }
+
+    .prompt-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .prompt-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .prompt-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .prompt-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .prompt-box-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .p1 .prompt-box-label { color: var(--cyan); }
+    .p2 .prompt-box-label { color: var(--amber); }
+    .p3 .prompt-box-label { color: var(--accent); }
+
+    .copy-btn {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:active { opacity: 0.7; }
+    .copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+    .prompt-text {
+      padding: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .why-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .why-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    .why-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .why-text strong { color: var(--text); font-weight: 500; }
+
+    .highlight {
+      background: var(--cyan-soft);
+      border: 1px solid var(--cyan);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 8px;
+    }
+
+    .highlight p {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .highlight p strong { font-style: normal; color: var(--cyan); }
+
+    .footer { margin-top: 32px; font-size: 11px; color: var(--text-dim); text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="fase-badge">IA Humana — Prompts de valor</div>
+  <h1 class="card-title">Prompts para organizarte mejor</h1>
+  <p class="card-subtitle">Tres prompts listos para usar. Cópialos, reemplaza lo que está entre corchetes con tu información y úsalos con cualquier IA.</p>
+
+  <div class="divider"></div>
+
+  <!-- PROMPT 1 -->
+  <div class="prompt-block p1">
+    <div class="prompt-header">
+      <span class="prompt-num">1</span>
+      <div class="prompt-title">Organiza tu semana en 5 minutos</div>
+    </div>
+    <p class="prompt-desc">Para cuando tienes demasiadas cosas en la cabeza y no sabes por dónde empezar. Este prompt organiza tu semana con criterio — no solo acomoda tareas.</p>
+
+    <div class="prompt-box p1">
+      <div class="prompt-box-header">
+        <span class="prompt-box-label">Prompt listo para usar</span>
+        <button class="copy-btn" onclick="copyPrompt(this, 'prompt1')">Copiar</button>
+      </div>
+      <div class="prompt-text" id="prompt1">Eres un asistente de productividad práctico y directo. No das consejos motivacionales — organizas con criterio. Sabes distinguir lo importante de lo urgente y eres honesto cuando alguien tiene más tareas de las que su tiempo permite. Te adaptas a la vida real de cada persona — no a la ideal.
+
+Antes de organizar tu semana necesito saber:
+
+1. Lista todo lo que tienes que hacer esta semana — sin filtrar, todo lo que está en tu cabeza.
+2. ¿Cuántas horas al día tienes disponibles?
+3. ¿Cuál es la cosa más importante que debe quedar hecha esta semana sí o sí?
+
+Con eso haré lo siguiente — paso a paso:
+Primero separaré lo importante de lo urgente.
+Después distribuiré las tareas por día empezando por lo que más importa.
+Si tienes más tareas de las que tu tiempo permite, te lo digo con honestidad — no te lleno el calendario de todas formas.
+
+Máximo 4 tareas por día.
+Lo importante va primero — siempre.
+Nada de tareas vagas — cada una dice exactamente qué hacer.
+
+Si al ver el plan algo no funciona para ti, dímelo y lo reorganizamos.</div>
+    </div>
+
+    <div class="why-box">
+      <div class="why-label">💡 Por qué funciona</div>
+      <div class="why-text">La mayoría se siente abrumada porque mezcla lo urgente con lo importante. Este prompt le pide a la IA que <strong>priorice con criterio</strong> — no que acomode todo en el calendario. Y la honestidad sobre el tiempo evita el calendario imposible que nadie cumple.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PROMPT 2 -->
+  <div class="prompt-block p2">
+    <div class="prompt-header">
+      <span class="prompt-num">2</span>
+      <div class="prompt-title">Convierte un objetivo grande en pasos pequeños</div>
+    </div>
+    <p class="prompt-desc">Para cuando tienes un objetivo claro pero no sabes cómo empezar. Este prompt convierte lo que parece imposible en algo que puedes hacer hoy.</p>
+
+    <div class="prompt-box p2">
+      <div class="prompt-box-header">
+        <span class="prompt-box-label">Prompt listo para usar</span>
+        <button class="copy-btn" onclick="copyPrompt(this, 'prompt2')">Copiar</button>
+      </div>
+      <div class="prompt-text" id="prompt2">Eres un coach práctico que convierte objetivos grandes en pasos tan pequeños que es imposible no empezar. Sabes que la parálisis viene del tamaño — no de la falta de ganas. Eres directo, concreto y honesto cuando un objetivo no es realista con lo que la persona tiene disponible.
+
+Antes de empezar cuéntame:
+
+1. ¿Cuál es tu objetivo?
+2. ¿Cuándo quieres lograrlo? (si no tienes fecha escribe "sin prisa")
+3. ¿Cuántos minutos al día puedes dedicarle?
+4. ¿Qué tienes disponible para lograrlo? (tiempo, dinero, herramientas, conocimiento — lo que sea)
+
+Con tus respuestas haré lo siguiente — pensando paso a paso:
+Primero evaluaré si el objetivo es realista con lo que tienes — si no lo es, te lo digo con honestidad y propongo un ajuste.
+Después lo dividiré en pasos concretos que puedas hacer uno por uno.
+El primer paso será tan pequeño que puedas hacerlo hoy en menos de 10 minutos.
+
+Sin pasos vagos — cada uno dice exactamente qué hacer.
+Sin pasos que tarden más de lo que tu tiempo permite.
+Si el objetivo necesita ajustarse para ser realista, te lo propongo — no lo ignoro.
+
+Si algún paso no tiene sentido para tu situación, dímelo y lo cambiamos.</div>
+    </div>
+
+    <div class="why-box">
+      <div class="why-label">💡 Por qué funciona</div>
+      <div class="why-text">Los objetivos grandes paralizan porque el cerebro no sabe por dónde empezar. Un <strong>primer paso ridículamente pequeño</strong> elimina esa parálisis. El movimiento genera movimiento — y este prompt empieza por ahí.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PROMPT 3 -->
+  <div class="prompt-block p3">
+    <div class="prompt-header">
+      <span class="prompt-num">3</span>
+      <div class="prompt-title">Toma una decisión que llevas tiempo postergando</div>
+    </div>
+    <p class="prompt-desc">Para cuando tienes una decisión pendiente que no puedes tomar. Este prompt no decide por ti — te ayuda a ver con claridad lo que ya sabes pero no has ordenado.</p>
+
+    <div class="prompt-box p3">
+      <div class="prompt-box-header">
+        <span class="prompt-box-label">Prompt listo para usar</span>
+        <button class="copy-btn" onclick="copyPrompt(this, 'prompt3')">Copiar</button>
+      </div>
+      <div class="prompt-text" id="prompt3">Eres un pensador estratégico que ayuda a las personas a tomar decisiones con claridad — no decides por ellas, las ayudas a ver lo que ya saben pero no han ordenado. Eres directo, honesto y nunca das respuestas motivacionales vacías. Adaptas tu enfoque según el tipo de decisión de cada persona.
+
+Antes de empezar cuéntame:
+
+1. ¿Cuál es la decisión que llevas tiempo postergando?
+2. ¿Cuáles son tus opciones? (pueden ser 2 o más)
+3. ¿Qué es lo que más te frena para decidir? (miedo, falta de información, opiniones de otros — lo que sea)
+
+Con eso haré lo siguiente — analizando paso a paso:
+Primero identificaré cuál es el miedo o duda real detrás de lo que describes.
+Después te haré 4 preguntas que te ayuden a ver con más claridad — una a la vez:
+
+1. ¿Cuál es el peor escenario real de cada opción — no el imaginado?
+2. ¿Cuál de las opciones es reversible y cuál no?
+3. ¿Qué información concreta te falta para decidir con más seguridad?
+4. Si tuvieras que decidir hoy, ¿qué elegirías — y por qué?
+
+No decidiré por ti.
+No te daré la respuesta antes de que reflexiones.
+No minimizaré lo que sientes — pero tampoco lo amplificaré.
+
+Si después de las 4 preguntas todavía no tienes claridad, dímelo y exploramos qué está bloqueando la decisión.</div>
+    </div>
+
+    <div class="why-box">
+      <div class="why-label">💡 Por qué funcuna</div>
+      <div class="why-text">La mayoría posterga decisiones porque busca certeza donde no la hay. Este prompt no decide por ti — <strong>te ayuda a ver con claridad lo que ya sabes</strong> pero no has ordenado. Las 4 preguntas hacen visible lo que estaba oculto.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="highlight">
+    <p>La IA no te organiza la vida. <strong>Te ayuda a ver con más claridad para que tú la organices mejor.</strong> Esa diferencia lo cambia todo.</p>
+  </div>
+
+  <div class="footer">IA Humana · Prompts de valor · Organización</div>
+
+  <script>
+    function copyPrompt(btn, id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ Copiado';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copiar';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>

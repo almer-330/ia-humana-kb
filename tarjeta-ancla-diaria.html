@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ancla diaria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #ffffff0f;
+      --accent: #7c6aff;
+      --accent-soft: #7c6aff18;
+      --green: #4ade80;
+      --green-soft: #4ade8018;
+      --amber: #fbbf24;
+      --amber-soft: #fbbf2418;
+      --cyan: #22d3ee;
+      --cyan-soft: #22d3ee18;
+      --text: #e8e8f0;
+      --text-muted: #7878a0;
+      --text-dim: #4a4a6a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 24px 20px 60px;
+    }
+
+    .fase-badge {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: var(--green-soft);
+      color: var(--green);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 22px 0; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    /* REGLA */
+    .regla {
+      background: var(--green-soft);
+      border: 1px solid var(--green);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .regla-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    .regla-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .regla-text span { color: var(--green); }
+
+    /* PROMPT BOX */
+    .prompt-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .prompt-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .prompt-box-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+
+    .copy-btn {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:active { opacity: 0.7; }
+    .copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+    .prompt-text {
+      padding: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* DECISION CARDS */
+    .decision-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .decision-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .decision-icon { font-size: 20px; display: block; margin-bottom: 6px; }
+
+    .decision-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .decision-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    /* RULE CARD */
+    .rule-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .rule-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+    .rule-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .rule-text strong { color: var(--text); font-weight: 500; }
+
+    /* HIGHLIGHT */
+    .highlight {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 20px;
+    }
+
+    .highlight p {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .highlight p strong { font-style: normal; color: var(--accent); }
+
+    .footer { margin-top: 32px; font-size: 11px; color: var(--text-dim); text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="fase-badge">Sistema de organización</div>
+  <h1 class="card-title">Ancla diaria</h1>
+  <p class="card-subtitle">2 minutos cada mañana. Una sola pregunta. Sin Notion, sin tableros, sin color coding.</p>
+
+  <!-- REGLA -->
+  <div class="regla">
+    <div class="regla-label">La única regla</div>
+    <div class="regla-text">
+      Si no puedes hacer la sesión completa —<br>
+      <span>haz la mínima.</span><br>
+      Lo mínimo siempre cuenta.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PROMPT -->
+  <p class="section-label">El prompt — úsalo cada mañana</p>
+
+  <div class="prompt-box">
+    <div class="prompt-box-header">
+      <span class="prompt-box-label">Prompt listo</span>
+      <button class="copy-btn" onclick="copyPrompt(this, 'ancla')">Copiar</button>
+    </div>
+    <div class="prompt-text" id="ancla">Soy alguien que está aprendiendo Python para llegar al trading cuantitativo y proyectos de IA. También tengo un canal de Telegram llamado "IA de la mano" donde documento lo que aprendo.
+
+Mis dos sistemas activos son:
+1. Sistema de estudio Python — 4 sesiones por semana, días fijos
+2. Sistema del canal — 1 día por semana, publicar lo que aprendo
+
+Hoy es [DÍA DE LA SEMANA].
+Mi energía ahora mismo es: [ALTA / MEDIA / BAJA]
+Lo más importante esta semana es: [UNA COSA]
+
+Respóndeme con tres cosas únicamente:
+1. ¿Qué sistema toca hoy según mi frecuencia?
+2. ¿Qué tipo de sesión tiene sentido según mi energía?
+3. ¿Cuál es el primer paso concreto para arrancar — en una sola línea?
+
+Sin planes largos. Sin consejos. Solo esas tres cosas.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- DECISIONES -->
+  <p class="section-label">Qué significa cada respuesta</p>
+
+  <div class="decision-grid">
+    <div class="decision-card">
+      <span class="decision-icon">🔥</span>
+      <div class="decision-title">Energía alta</div>
+      <div class="decision-desc">Sesión completa — concepto nuevo, ejercicio y cierre con registro.</div>
+    </div>
+    <div class="decision-card">
+      <span class="decision-icon">⚡</span>
+      <div class="decision-title">Energía media</div>
+      <div class="decision-desc">Sesión completa pero sin presión de avanzar — repaso o ejercicio.</div>
+    </div>
+    <div class="decision-card">
+      <span class="decision-icon">🌙</span>
+      <div class="decision-title">Energía baja</div>
+      <div class="decision-desc">Sesión mínima — 15-20 minutos. Cuenta igual.</div>
+    </div>
+    <div class="decision-card">
+      <span class="decision-icon">✋</span>
+      <div class="decision-title">Sin energía</div>
+      <div class="decision-desc">Descanso real. Sin culpa. El sistema aguanta.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- REGLAS -->
+  <p class="section-label">Las tres reglas del sistema</p>
+
+  <div class="rule-card">
+    <span class="rule-icon">1️⃣</span>
+    <div class="rule-text"><strong>Una decisión por mañana.</strong> No decides durante el día — decides en la mañana y ejecutas. Eso elimina la fricción.</div>
+  </div>
+
+  <div class="rule-card">
+    <span class="rule-icon">2️⃣</span>
+    <div class="rule-text"><strong>Lo mínimo siempre vale.</strong> 15 minutos de Python o marcar una idea para el canal es progreso real. Lo que no vale es saltarse sin consciencia.</div>
+  </div>
+
+  <div class="rule-card">
+    <span class="rule-icon">3️⃣</span>
+    <div class="rule-text"><strong>El sistema se adapta a ti.</strong> Si una semana completa se cae — no es falla del sistema, es vida. La revisión del domingo existe para ajustar, no para castigarte.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="highlight">
+    <p>Los sistemas no fallan por falta de planificación. Fallan porque <strong>decidir qué hacer consume energía antes de empezar.</strong> Esta ancla elimina esa decisión.</p>
+  </div>
+
+  <div class="footer">Sistema de organización · IA Humana · Ancla diaria</div>
+
+  <script>
+    function copyPrompt(btn, id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ Copiado';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copiar';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>

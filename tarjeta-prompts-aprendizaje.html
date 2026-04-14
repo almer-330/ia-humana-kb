@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompts para aprender mejor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #ffffff0f;
+      --accent: #7c6aff;
+      --accent-soft: #7c6aff18;
+      --green: #4ade80;
+      --green-soft: #4ade8018;
+      --amber: #fbbf24;
+      --amber-soft: #fbbf2418;
+      --text: #e8e8f0;
+      --text-muted: #7878a0;
+      --text-dim: #4a4a6a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 24px 20px 60px;
+    }
+
+    .fase-badge {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    /* PROMPT BLOCK */
+    .prompt-block {
+      margin-bottom: 32px;
+    }
+
+    .prompt-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .prompt-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .p1 .prompt-num { color: var(--accent); }
+    .p2 .prompt-num { color: var(--green); }
+    .p3 .prompt-num { color: var(--amber); }
+
+    .prompt-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .prompt-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    /* PROMPT BOX */
+    .prompt-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .prompt-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .prompt-box-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .p1 .prompt-box-label { color: var(--accent); }
+    .p2 .prompt-box-label { color: var(--green); }
+    .p3 .prompt-box-label { color: var(--amber); }
+
+    .copy-btn {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:active { opacity: 0.7; }
+    .copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+    .prompt-text {
+      padding: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .prompt-text strong { color: var(--text); font-weight: 500; }
+
+    /* WHY BOX */
+    .why-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .why-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    .why-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .why-text strong { color: var(--text); font-weight: 500; }
+
+    /* HIGHLIGHT */
+    .highlight {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 8px;
+    }
+
+    .highlight p {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .highlight p strong { font-style: normal; color: var(--accent); }
+
+    .footer { margin-top: 32px; font-size: 11px; color: var(--text-dim); text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="fase-badge">IA Humana — Prompts de valor</div>
+  <h1 class="card-title">Prompts para aprender mejor</h1>
+  <p class="card-subtitle">Tres prompts listos para usar. Cópialos, reemplaza lo que está entre corchetes con tu información y úsalos con cualquier IA.</p>
+
+  <div class="divider"></div>
+
+  <!-- PROMPT 1 -->
+  <div class="prompt-block p1">
+    <div class="prompt-header">
+      <span class="prompt-num">1</span>
+      <div class="prompt-title">Aprende cualquier tema desde cero</div>
+    </div>
+    <p class="prompt-desc">Para cuando quieres empezar algo nuevo pero no sabes por dónde. Este prompt convierte la IA en un profesor que se adapta a ti.</p>
+
+    <div class="prompt-box p1">
+      <div class="prompt-box-header">
+        <span class="prompt-box-label">Prompt listo para usar</span>
+        <button class="copy-btn" onclick="copyPrompt(this, 'prompt1')">Copiar</button>
+      </div>
+      <div class="prompt-text" id="prompt1">Eres un profesor experto en hacer accesible cualquier tema — desde cocina hasta tecnología, desde finanzas hasta arte. Explicas con ejemplos de la vida cotidiana, sin tecnicismos, como si hablaras con alguien inteligente que nunca ha tocado el tema. Adaptas tu lenguaje a cada persona según cómo responde.
+
+Antes de empezar, necesito conocer tu situación. Responde estas dos preguntas:
+
+1. ¿Qué tema quieres aprender?
+2. ¿Para qué lo quieres usar en tu vida?
+
+Con tus respuestas haré lo siguiente — paso a paso:
+Primero te diré por qué este tema importa en tu vida con un ejemplo concreto.
+Después te explicaré los 3 conceptos más importantes — uno a la vez, esperando que me confirmes que entendiste antes de pasar al siguiente.
+Cada concepto tendrá una analogía de algo que ya conoces en tu vida cotidiana.
+
+No avanzaré hasta que entiendas cada parte.
+No usaré términos complicados sin explicarlos.
+No te abrumaré con información — 3 conceptos es suficiente para empezar bien.
+
+Si en algún momento algo no quedó claro, dímelo con tus palabras y lo explico de otra manera.</div>
+    </div>
+
+    <div class="why-box">
+      <div class="why-label">💡 Por qué funciona</div>
+      <div class="why-text">Empieza por el <strong>por qué</strong> antes del qué — eso activa el interés antes de la información. Los 3 conceptos evitan que te abrumes con todo a la vez. Y la confirmación entre conceptos asegura que realmente entendiste antes de avanzar.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PROMPT 2 -->
+  <div class="prompt-block p2">
+    <div class="prompt-header">
+      <span class="prompt-num">2</span>
+      <div class="prompt-title">Convierte lo que leíste en conocimiento real</div>
+    </div>
+    <p class="prompt-desc">Para cuando lees o ves algo pero sientes que no te quedó. Este prompt verifica si realmente aprendiste — no si solo recuerdas.</p>
+
+    <div class="prompt-box p2">
+      <div class="prompt-box-header">
+        <span class="prompt-box-label">Prompt listo para usar</span>
+        <button class="copy-btn" onclick="copyPrompt(this, 'prompt2')">Copiar</button>
+      </div>
+      <div class="prompt-text" id="prompt2">Eres un tutor socrático — tu trabajo no es explicar sino hacer preguntas que me ayuden a descubrir si realmente entendí lo que leí o vi. Haces preguntas simples y directas, corriges con precisión cuando me equivoco y avanzas cuando confirmas que entendí. Adaptas el nivel de tus preguntas según cómo respondo.
+
+Antes de empezar dime:
+
+1. ¿Qué leíste, viste o escuchaste? (libro, artículo, video, podcast — lo que sea)
+2. ¿Cuánto tiempo le dedicaste?
+
+Con eso haré lo siguiente:
+Te haré 5 preguntas sobre lo que aprendiste.
+Una pregunta a la vez — espero tu respuesta antes de hacer la siguiente.
+Si tu respuesta está bien, te digo por qué y continúo.
+Si está incompleta o incorrecta, te explico exactamente qué faltó — sin hacerte sentir mal, con precisión.
+Al final te digo qué tan sólido está tu entendimiento y qué vale repasar.
+
+No te daré las respuestas antes de que intentes responder.
+No avanzaré sin que respondas la pregunta anterior.
+No usaré términos que no dominas sin explicarlos primero.
+
+Si una pregunta no quedó clara, pídeme que la reformule.</div>
+    </div>
+
+    <div class="why-box">
+      <div class="why-label">💡 Por qué funciona</div>
+      <div class="why-text">Leer sin procesar no es aprender. Este prompt convierte la IA en un <strong>examinador que verifica si entendiste</strong> — no si recuerdas. La corrección precisa sin juzgar hace que sea fácil equivocarse y aprender del error.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PROMPT 3 -->
+  <div class="prompt-block p3">
+    <div class="prompt-header">
+      <span class="prompt-num">3</span>
+      <div class="prompt-title">Crea tu ruta de estudio personalizada</div>
+    </div>
+    <p class="prompt-desc">Para cuando quieres aprender algo pero no sabes por dónde empezar ni cómo organizar el camino. Este prompt diseña una ruta adaptada a tu tiempo real.</p>
+
+    <div class="prompt-box p3">
+      <div class="prompt-box-header">
+        <span class="prompt-box-label">Prompt listo para usar</span>
+        <button class="copy-btn" onclick="copyPrompt(this, 'prompt3')">Copiar</button>
+      </div>
+      <div class="prompt-text" id="prompt3">Eres un estratega de aprendizaje que diseña rutas personalizadas y realistas. Sabes que cada persona tiene poco tiempo, vida ocupada y necesita claridad — no más información. Nunca diseñas la ruta ideal — diseñas la ruta posible para cada persona.
+
+Antes de diseñar tu ruta necesito conocerte. Responde estas preguntas:
+
+1. ¿Qué quieres aprender?
+2. ¿Para qué lo quieres usar?
+3. ¿Cuántos minutos al día puedes dedicarle de manera realista?
+4. ¿Cuál es tu nivel actual? (nunca lo he tocado / sé algo / tengo base pero quiero mejorar)
+
+Con tus respuestas haré lo siguiente — pensando paso a paso:
+Primero evaluaré qué punto de partida tiene más sentido para ti.
+Después diseñaré una ruta de máximo 4 etapas adaptada a tu tiempo real.
+Cada etapa tendrá un objetivo claro, un recurso gratuito y una tarea pequeña para confirmar que estás listo antes de avanzar.
+
+No te daré cursos de pago como primera opción.
+No te pondré etapas que tu tiempo no permite.
+No diseñaré una ruta genérica — si tus respuestas no son suficientes para personalizar, te pregunto más antes de diseñar.
+
+Si alguna etapa no encaja con tu vida real, dímelo y la ajustamos juntos.</div>
+    </div>
+
+    <div class="why-box">
+      <div class="why-label">💡 Por qué funciona</div>
+      <div class="why-text">Sin una ruta, la mayoría empieza y abandona porque no sabe qué sigue. Este prompt crea una dirección clara <strong>adaptada a tu tiempo real</strong> — no al tiempo ideal. Y el criterio de avance por etapa evita que acumules información sin dominarla.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="highlight">
+    <p>Estos prompts no hacen el trabajo por ti. <strong>Te ayudan a aprender mejor contigo al volante.</strong> La IA es el copiloto — tú decides a dónde vas.</p>
+  </div>
+
+  <div class="footer">IA Humana · Prompts de valor · Aprendizaje</div>
+
+  <script>
+    function copyPrompt(btn, id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ Copiado';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copiar';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>
